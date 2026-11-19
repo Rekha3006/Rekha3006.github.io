@@ -368,7 +368,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.5);padding:1.8rem 2.5rem;di
   <div class="si">
     <div class="sec-lbl">Skills in Action</div>
     <h2 class="sec-title">See My Skills Working Live</h2>
-    <p class="sec-sub">Interactive demos — neural networks, runnable Python, SQL queries, and ML metrics. Not just buzzwords.</p>
+    <p class="sec-sub">Interactive demos and code samples: a PySpark lakehouse step, runnable Python, SQL queries and ML metrics.</p>
 
     <div class="demo-grid-2 reveal">
       <!-- Neural Network -->
@@ -456,19 +456,29 @@ max &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;98.700000<br/>
       </div>
     </div>
 
-    <!-- KPI Dashboard -->
+    <!-- Data engineering code sample -->
     <div class="demo-card reveal">
-      <div class="demo-hdr"><span class="demo-ttl">power_bi_kpis.pbix · Web Analytics · 50+ KPIs · Adobe Analytics · Google Analytics · WebEngage · AppsFlyer</span><span class="demo-badge db-green">INTERACTIVE</span></div>
-      <div class="demo-body">
-        <div class="kpi-strip">
-          <div class="kpi-box"><div class="kpi-v" style="color:var(--blue)">12+</div><div class="kpi-l">Dashboards</div></div>
-          <div class="kpi-box"><div class="kpi-v" style="color:#7C3AED">50+</div><div class="kpi-l">KPIs</div></div>
-          <div class="kpi-box"><div class="kpi-v" style="color:var(--green)">40%</div><div class="kpi-l">Error ↓</div></div>
-          <div class="kpi-box"><div class="kpi-v" style="color:var(--gold)">30%</div><div class="kpi-l">Insight ↑</div></div>
-          <div class="kpi-box"><div class="kpi-v" style="color:var(--blue)">20+</div><div class="kpi-l">JS Events</div></div>
-          <div class="kpi-box"><div class="kpi-v" style="color:#7C3AED">4</div><div class="kpi-l">Platforms</div></div>
+      <div class="demo-hdr"><span class="demo-ttl">silver_claims.py · PySpark · Delta Lake · illustrative code sample</span><span class="demo-badge db-gold">SAMPLE</span></div>
+      <div class="demo-body" style="padding:0;">
+        <div class="codeblock">
+          <div class="cb-bar"><div class="cb-dots"><div class="cbdot" style="background:#FF5F57"></div><div class="cbdot" style="background:#FFBD2E"></div><div class="cbdot" style="background:#28C840"></div></div><span class="cb-fname">silver_claims.py</span></div>
+          <div class="cb-code">
+<span class="cc"># Code sample: bronze → silver step of a medallion pipeline</span><br/>
+<span class="ck">from</span> pyspark.sql <span class="ck">import</span> functions <span class="ck">as</span> F, Window<br/>
+<br/>
+raw = spark.read.<span class="cf">format</span>(<span class="cs">&quot;delta&quot;</span>).<span class="cf">load</span>(BRONZE_PATH)<br/>
+<br/>
+<span class="cc"># keep the latest record per claim, drop bad rows</span><br/>
+w = Window.<span class="cf">partitionBy</span>(<span class="cs">&quot;claim_id&quot;</span>).<span class="cf">orderBy</span>(F.<span class="cf">col</span>(<span class="cs">&quot;event_ts&quot;</span>).<span class="cf">desc</span>())<br/>
+silver = (raw.<span class="cf">filter</span>(F.<span class="cf">col</span>(<span class="cs">&quot;claim_id&quot;</span>).<span class="cf">isNotNull</span>())<br/>
+&nbsp;&nbsp;.<span class="cf">withColumn</span>(<span class="cs">&quot;rn&quot;</span>, F.<span class="cf">row_number</span>().<span class="cf">over</span>(w))<br/>
+&nbsp;&nbsp;.<span class="cf">filter</span>(<span class="cs">&quot;rn = 1&quot;</span>).<span class="cf">drop</span>(<span class="cs">&quot;rn&quot;</span>)<br/>
+&nbsp;&nbsp;.<span class="cf">withColumn</span>(<span class="cs">&quot;member_id&quot;</span>, F.<span class="cf">sha2</span>(<span class="cs">&quot;member_id&quot;</span>, <span class="cn">256</span>)))  <span class="cc"># PII masking</span><br/>
+<br/>
+(silver.write.<span class="cf">format</span>(<span class="cs">&quot;delta&quot;</span>).<span class="cf">mode</span>(<span class="cs">&quot;overwrite&quot;</span>)<br/>
+&nbsp;&nbsp;.<span class="cf">partitionBy</span>(<span class="cs">&quot;service_date&quot;</span>).<span class="cf">save</span>(SILVER_PATH))
+          </div>
         </div>
-        <canvas id="kpiChart" height="72"></canvas>
       </div>
     </div>
   </div>
@@ -603,7 +613,7 @@ max &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;98.700000<br/>
   <div class="si">
     <div class="sec-lbl">Certifications</div>
     <h2 class="sec-title">Licenses & Credentials</h2>
-    <p class="sec-sub">11 verified certifications — click any to verify or view the certificate.</p>
+    <p class="sec-sub">10 verified certifications — click any to verify or view the certificate.</p>
     <div class="cert-grid">
       <a class="cert-card reveal" href="https://learn.microsoft.com/api/credentials/share/en-us/AtluriRekhaLaxmiSarojini-8460/7F5FBA55048D8585?sharingId=5B933DF10D38D682" target="_blank">
         <div class="cert-ic">🏆</div><div class="cert-info"><div class="cert-nm">Microsoft Power BI Data Analyst Associate (PL-300)</div><div class="cert-by">Microsoft · May 2026 · ID: 7F5FBA55048D8585</div></div><span class="cert-vfy">Verify ↗</span>
@@ -635,10 +645,7 @@ max &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;98.700000<br/>
       <div class="cert-card reveal" onclick="openM('m-cloud-core')">
         <div class="cert-ic">☁️</div><div class="cert-info"><div class="cert-nm">Cloud Computing: Understanding Core Concepts</div><div class="cert-by">LinkedIn Learning · Aug 2025</div></div><span class="cert-vfy">View</span>
       </div>
-      <div class="cert-card reveal" onclick="openM('m-coursera')">
-        <div class="cert-ic">💻</div><div class="cert-info"><div class="cert-nm">C for Everyone: Programming Fundamentals</div><div class="cert-by">Coursera · UC Santa Cruz · Apr 2020</div></div><span class="cert-vfy">View</span>
-      </div>
-    </div>
+</div>
   </div>
 </section>
 
@@ -651,7 +658,7 @@ max &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;98.700000<br/>
       <div class="edu-card reveal">
         <div class="edu-gpa">3.9</div>
         <div class="edu-logo">UH</div>
-        <div class="edu-deg">Masters in Engineering Data Science</div>
+        <div class="edu-deg">Master of Engineering in Data Science</div>
         <div class="edu-sch">University of Houston</div>
         <div class="edu-det">Houston, TX · Aug 2024 – May 2026</div>
         <div style="margin-top:.9rem;display:flex;flex-wrap:wrap;gap:.35rem;">
@@ -762,7 +769,6 @@ max &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;98.700000<br/>
 <div class="modal" id="m-cloud-obs" onclick="closeM('m-cloud-obs')"><button class="modal-x" onclick="closeM('m-cloud-obs')">✕</button><img src="images/cloud_obs_cert.jpg" alt="Cloud Obs Certificate"/></div>
 <div class="modal" id="m-cloud-net" onclick="closeM('m-cloud-net')"><button class="modal-x" onclick="closeM('m-cloud-net')">✕</button><img src="images/cloud_net_cert.jpg" alt="Cloud Net Certificate"/></div>
 <div class="modal" id="m-cloud-core" onclick="closeM('m-cloud-core')"><button class="modal-x" onclick="closeM('m-cloud-core')">✕</button><img src="images/cloud_core_cert.jpg" alt="Cloud Core Certificate"/></div>
-<div class="modal" id="m-coursera" onclick="closeM('m-coursera')"><button class="modal-x" onclick="closeM('m-coursera')">✕</button><img src="images/coursera_cert.jpg" alt="Coursera Certificate"/></div>
 
 <script>
 const bar=document.getElementById('bar');
@@ -782,19 +788,6 @@ const nls=document.querySelectorAll('.nav-links a');
 window.addEventListener('scroll',()=>{let cur='';secs.forEach(s=>{if(window.scrollY>=s.offsetTop-80)cur=s.id});nls.forEach(a=>{a.classList.toggle('active',a.getAttribute('href')==='#'+cur);});},{passive:true});
 const bObs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.querySelectorAll('.pi-fill').forEach(b=>{const w=b.style.width;b.style.width='0';setTimeout(()=>b.style.width=w,100);});bObs.unobserve(e.target);}});},{threshold:.3});
 document.querySelectorAll('.proj-ill').forEach(el=>bObs.observe(el));
-
-// ── KPI CHART ──
-new Chart(document.getElementById('kpiChart'),{
-  type:'line',
-  data:{labels:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
-  datasets:[
-    {label:'KPI Score',data:[72,75,78,82,80,85,88,84,90,87,92,94],borderColor:'#1A56DB',backgroundColor:'rgba(26,86,219,.07)',fill:true,tension:.4,pointRadius:2,pointBackgroundColor:'#1A56DB'},
-    {label:'Error Rate',data:[40,36,32,28,30,25,22,26,18,20,15,12],borderColor:'#DC2626',backgroundColor:'rgba(220,38,38,.04)',fill:true,tension:.4,pointRadius:2,pointBackgroundColor:'#DC2626'}
-  ]},
-  options:{responsive:true,plugins:{legend:{labels:{color:'#5C6B84',font:{size:11}}}},
-  scales:{x:{grid:{color:'rgba(0,0,0,.04)'},ticks:{color:'#9AAABB',font:{size:9}}},
-  y:{grid:{color:'rgba(0,0,0,.04)'},ticks:{color:'#9AAABB',font:{size:9}}}}}
-});
 
 // ── NEURAL NETWORK ──
 const nnc=document.getElementById('nncanvas');
